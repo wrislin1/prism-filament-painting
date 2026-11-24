@@ -13,7 +13,7 @@ from .params import LayerParams, MeshParams
 
 
 class MeshError(QuiltInputError):
-    """Raised when Quilt cannot produce a slicer-valid mesh."""
+    """Raised when the renderer cannot produce a slicer-valid mesh."""
 
 
 DEFAULT_FULL_VALIDATE_MAX_TRIANGLES = 500_000
@@ -76,7 +76,7 @@ class QuiltMesh:
         records["v0"] = triangles[:, 0]
         records["v1"] = triangles[:, 1]
         records["v2"] = triangles[:, 2]
-        header = b"Quilt stepped STL (numpy writer)".ljust(80, b"\0")
+        header = b"Prism stepped STL (numpy writer)".ljust(80, b"\0")
         return header + np.array([len(self.faces)], dtype="<u4").tobytes() + records.tobytes()
 
     def validate(self, *, full: bool) -> None:

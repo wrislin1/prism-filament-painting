@@ -1,4 +1,4 @@
-"""Shared preview metrics for Prism palette ranking and Quilt previews."""
+"""Shared preview metrics for Prism palette ranking and renderer previews."""
 
 from __future__ import annotations
 
@@ -137,7 +137,7 @@ def preview_metrics(
     transparent_mask: np.ndarray | None = None,
     layer_rgb=None,
 ) -> dict[str, float]:
-    """Combined metrics used by Prism diagnostics and Quilt reports."""
+    """Combined metrics used by Prism diagnostics and renderer reports."""
 
     pred = _rgb_image_array(predicted)
     tgt = _rgb_image_array(target)

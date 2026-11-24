@@ -1,9 +1,9 @@
 # Rehearse a release candidate
 
 Start only after the personal owner authorises the repository name and a private
-GitHub Actions run. Use the verified single-commit checkout and the expected
+GitHub Actions run. For an initial rehearsal, use the verified checkout and the expected
 commit, tree, manifest and archive digests from its independent verification.
-Keep that verification record on the coordinator's machine. The hosted jobs
+Keep that verification record on the maintainer's machine. The hosted jobs
 need only the checkout. Git, GitHub CLI, jq and sha256sum are required locally.
 
 The following Bash commands assume CANDIDATE is the verified checkout,
@@ -24,7 +24,7 @@ sha=$(jq -er .attestation.commit "$RECEIPT")
 tree=$(jq -er .attestation.tree "$RECEIPT")
 test "$(git -C "$CANDIDATE" rev-parse HEAD)" = "$sha"
 test "$(git -C "$CANDIDATE" rev-parse 'HEAD^{tree}')" = "$tree"
-test "$(git -C "$CANDIDATE" rev-list --count --all)" = 1
+test "$(git -C "$CANDIDATE" rev-list --count --all)" = "$(jq -er .objects.commit "$RECEIPT")"
 test "$(sha256sum "$CANDIDATE/DESTINATION-SHA256.json" | cut -d' ' -f1)" = \
      "$(jq -er .attestation.manifest_sha256 "$RECEIPT")"
 

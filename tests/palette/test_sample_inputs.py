@@ -20,7 +20,7 @@ def test_example_inventory_and_image(tmp_path):
     assert path.read_bytes() == files("prism_filament_painting.palette").joinpath("data/example_spools.csv").read_bytes()
     assert hashlib.sha256(path.read_bytes()).hexdigest() == "8ca9914c59fc2a07b7bacccef310696a44c3fd04678f6ee3b27b47aafa44f101"
     image = sample_image()
-    assert hashlib.sha256(image.tobytes()).hexdigest() == "41a29e5422676c095b464660d9e9bf3ad07520c6b11c7e3b5f41663a40ed6f1d"
+    assert hashlib.sha256(image.tobytes()).hexdigest() == "028f446240171548796d740f45aa940becd7d29bbd3a5dd4fc7e12248e8ac41a"
     png = tmp_path / "ramp.png"
     image.save(png)
     with Image.open(png) as decoded:
@@ -36,14 +36,14 @@ def test_example_inventory_and_image(tmp_path):
         assert (best.score, best.swap_schedule) == (rescored.score, rescored.swap_schedule)
         stack = build_forward_stack(best.filaments, swap_schedule=best.swap_schedule)
         preview = render_preview(decoded, stack)
-        assert hashlib.sha256(preview.tobytes()).hexdigest() == "54b2ff4e41d645c4c7f63c59392e4f7c33d21031937475da5a16c429e32c6336"
+        assert hashlib.sha256(preview.tobytes()).hexdigest() == "7c8841412cf4dcf391b2575e2a0ffdebeae73f0c47ba87d7023b216ca2ac9a83"
 
 
 def test_black_point_clips_generated_shadows():
-    image = sample_image()
+    image = Image.frombytes("L", (256, 1), bytes(range(256))).convert("RGB")
     adjusted = apply_enhancement(image, EnhanceParams(black_point=0.3))
     assert image.convert("L").histogram()[0] == 1
-    assert adjusted.convert("L").histogram()[0] == 46
+    assert adjusted.convert("L").histogram()[0] == 78
 
 
 def test_missing_and_user_fitted_opacity(monkeypatch, tmp_path):

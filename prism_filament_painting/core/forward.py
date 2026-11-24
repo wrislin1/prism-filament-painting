@@ -1,15 +1,15 @@
 """forward simulation: luminance -> stack height -> TD-composited color.
 
-Prism and Quilt share the band compositor. The luminance and orientation
-functions mirror Quilt's height-field logic. This module raises ``ValueError`` and
+Ranking and rendering share the band compositor. The luminance and orientation
+functions mirror the renderer's height-field logic. This module raises ``ValueError`` and
 imports only numpy + ``prism_filament_painting.core.color``; PIL is used only via the passed
 image object (no top-level import).
 
 ``luminance_to_layer`` is the opaque luminance core (luminance -> layer index).
-``image_to_layer_field`` is the full RGBA-parity entry: it adds Quilt's
+``image_to_layer_field`` is the full RGBA-parity entry: it adds the renderer's
 ``flatten_transparent`` step (``alpha == 0`` pixels forced to ``base_layers``)
 and is what reproduces ``_field_from_rgba`` for transparent images. The parity
-test locks ``image_to_layer_field`` against Quilt for both flatten settings.
+test locks ``image_to_layer_field`` against the renderer for both flatten settings.
 """
 
 from __future__ import annotations
@@ -36,8 +36,8 @@ class RenderConstants:
     layer_height_mm: float = 0.08
     base_layers: int = 2
     total_layers: int = 27
-    black_point: float = 0.0  # mirrors Quilt LuminanceParams.black
-    white_point: float = 1.0  # mirrors Quilt LuminanceParams.white
+    black_point: float = 0.0  # mirrors renderer LuminanceParams.black
+    white_point: float = 1.0  # mirrors renderer LuminanceParams.white
     gamma: float = 1.0
     front_lit_scale: float = 0.1
 
@@ -66,7 +66,7 @@ def even_swap_schedule(
     base_layers: int,
     total_layers: int,
 ) -> tuple[int, ...]:
-    """Even contiguous swap schedule. Matches Quilt ``derive_swap_schedule`` (even)."""
+    """Even contiguous swap schedule. Matches renderer ``derive_swap_schedule`` (even)."""
     if palette_size < 1:
         raise ValueError("palette_size must be at least 1")
     if total_layers <= base_layers:
@@ -90,7 +90,7 @@ def _validate_schedule(
     base_layers: int,
     total_layers: int,
 ) -> None:
-    """Strictly validate an explicit swap schedule. Mirrors Quilt ``_validate_schedule``.
+    """Strictly validate an explicit swap schedule. Mirrors renderer ``_validate_schedule``.
 
     Length must be ``expected`` (filament count - 1); each layer must be a plain
     ``int`` (not ``bool``), strictly inside ``(base_layers, total_layers)``, and
@@ -119,7 +119,7 @@ def schedule_in_range(
     """Boolean: do all schedule entries lie strictly inside ``(base_layers, total_layers)``?
 
     Range-only sibling of :func:`_validate_schedule` for boundaries that don't know the
-    expected length (e.g. Prism's to-Quilt geometry form, where the palette is separate).
+    expected length (e.g. the geometry form, where the palette is separate).
     Single source for the open-interval membership test so it can't drift across callers.
     """
     for layer in schedule:
@@ -160,7 +160,7 @@ def build_forward_stack(
     """Composite an ordered N-filament stack top-down via Beer-Lambert physics.
 
     An explicit ``swap_schedule`` is strictly validated (range, monotonicity,
-    integer type); the auto-derived even schedule is trusted, matching Quilt's
+    integer type); the auto-derived even schedule is trusted, matching the renderer's
     ``derive_swap_schedule`` (validate explicit, trust derived) so this stays
     bit-for-bit equivalent to ``build_forward_table``.
     """
@@ -281,7 +281,7 @@ def luminance_to_layer(
     constants: RenderConstants,
     orientation: str,
 ) -> np.ndarray:
-    """Map luminance (0..1) to integer layer index. Ports Quilt ``_field_from_rgba``.
+    """Map luminance (0..1) to integer layer index. Ports renderer ``_field_from_rgba``.
 
     ``orientation`` must be "dark" or "bright" (resolve "auto" via
     :func:`resolve_orientation` first).
@@ -325,11 +325,11 @@ def image_to_layer_field(
     orientation: str,
     flatten_transparent: bool = True,
 ) -> np.ndarray:
-    """Map an RGBA image to integer layer indices. Full port of Quilt ``_field_from_rgba``.
+    """Map an RGBA image to integer layer indices. Full port of renderer ``_field_from_rgba``.
 
     ``orientation`` must already be resolved ("dark"/"bright"). When
     ``flatten_transparent`` is true, fully-transparent pixels (``alpha == 0``)
-    are forced to ``base_layers`` after the luminance mapping — exactly how Quilt
+    are forced to ``base_layers`` after the luminance mapping — exactly how the renderer
     prints a transparent background as the base filament. PIL is used only via
     the passed image object's ``.mode``/``.convert`` (no import).
     """
@@ -359,7 +359,7 @@ def render_preview(
 ):
     """Full predicted preview image for the stack. Imports PIL lazily.
 
-    Models transparency the way Quilt prints it: with ``flatten_transparent``
+    Models transparency the way the renderer prints it: with ``flatten_transparent``
     (default), ``alpha == 0`` pixels render as the base filament.
     """
     from PIL import Image  # noqa: PLC0415 — keep PIL a soft dependency of palette-core

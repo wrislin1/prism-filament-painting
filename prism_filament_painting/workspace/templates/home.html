@@ -9,8 +9,8 @@
   <label>Picture to print <input type="file" name="image" accept="image/png,image/jpeg,image/webp"{% if request.query_params.get('picture') != 'sample' %} required{% endif %} aria-describedby="picture-help"></label>
   <p id="picture-help" class="muted">Choose a still PNG, JPEG or WebP up to 4 megapixels and 16 MiB.</p>
   <label><input type="checkbox" id="use-sample"{% if request.query_params.get('picture') == 'sample' %} checked{% endif %}> Use the sample picture</label>
-  <p class="muted">Try a small colour gradient. <a href="/sample/picture.png" download="prism-sample.png">Download sample picture</a></p>
-  <label>Number of spools to use <input type="number" name="slots" min="1" max="{{ slots }}" value="{{ [slots, 2]|min }}" required></label>
+  <p class="muted">Try a three-colour landscape. <a href="/sample/picture.png" download="prism-sample.png">Download sample picture</a></p>
+  <label>Number of spools to use <input type="number" name="slots" min="1" max="{{ slots }}" value="{{ [slots, 3 if request.query_params.get('picture') == 'sample' else 2]|min }}" required></label>
   <p class="muted">Choose up to {{ slots }} from the {{ group }} group in your <a href="/filaments">spool library</a>.</p>
   <button class="btn-primary" type="submit">Find matching palettes</button>
   <details><summary>Adjust picture contrast</summary>

@@ -1,4 +1,4 @@
-"""Write editable Bambu/Orca projects from the final Quilt mesh and schedule.
+"""Write editable Bambu/Orca projects from the final renderer mesh and schedule.
 
 The layer-event encoding is adapted from Akoozie/layertone (MIT), commit
 836090ede4c0679cd05e56b49793f6562e9200a0. See licenses/layertone-MIT.txt.
@@ -31,8 +31,8 @@ _RELATIONSHIPS = """<Relationships xmlns="http://schemas.openxmlformats.org/pack
 <Relationship Id="model" Target="/3D/3dmodel.model" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>
 </Relationships>"""
 _MODEL_SETTINGS = """<config><object id="1">
-<metadata key="name" value="Quilt"/><metadata key="extruder" value="1"/>
-<part id="1" subtype="normal_part"><metadata key="name" value="Quilt"/></part>
+<metadata key="name" value="Prism"/><metadata key="extruder" value="1"/>
+<part id="1" subtype="normal_part"><metadata key="name" value="Prism"/></part>
 </object><plate><metadata key="plater_id" value="1"/>
 <metadata key="filament_map_mode" value="Auto For Flush"/>
 <metadata key="filament_maps" value="{filament_maps}"/><model_instance>
@@ -49,7 +49,7 @@ def _write_model(archive: ZipFile, result: GenerateResult, transform: str) -> No
                     b'<metadata name="Application">BambuStudio-01.10.01.50</metadata>'
                     b'<metadata name="OrcaSlicer">2.4.2</metadata>'
                     b'<metadata name="BambuStudio:3mfVersion">1</metadata>'
-                    b'<resources><object id="1" type="model" name="Quilt"><mesh><vertices>')
+                    b'<resources><object id="1" type="model" name="Prism"><mesh><vertices>')
         for x, y, z in mesh.vertices:
             model.write(f'<vertex x="{x:.12g}" y="{y:.12g}" z="{z:.12g}"/>\n'.encode())
         model.write(b'</vertices><triangles>')

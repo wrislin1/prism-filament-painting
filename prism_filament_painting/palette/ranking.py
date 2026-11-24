@@ -56,7 +56,7 @@ _SCHEDULE_EXHAUSTIVE_CAP = 4096
 _SCHEDULE_SAMPLES = 64  # fixed-seed diversification draws for palette sizes 5-8
 _SCHEDULE_MAX_SWEEPS = 6  # coordinate-descent sweeps for the size 5-8 fidelity score
 
-# Anti-collapse placement (Rung 16): a pure ΔE-fidelity objective collapses the
+# Band placement: a pure ΔE-fidelity objective collapses the
 # schedule onto the base (one translucent top filament reproduces a tone ramp with
 # lower per-pixel error than several opaque bands). Instead, allocate layers to
 # each filament in proportion to the image pixel mass that filament represents,
@@ -351,7 +351,7 @@ def _score_fixed_palette(
 
 def _bin_target_by_luminance(image: Image.Image, *, n_bins: int) -> tuple[_LumBin, ...]:
     if "A" in image.getbands():
-        # Transparent pixels are auto-flattened to the base filament by Quilt
+        # Transparent pixels are auto-flattened to the base filament by the renderer
         # regardless of palette, so they are background, not art to optimize.
         # Exclude alpha==0 rather than mis-binning their leftover RGB as bright.
         rgba = image if image.mode == "RGBA" else image.convert("RGBA")
@@ -1019,8 +1019,7 @@ def _search_placement(
 
     The **returned objective is the palette's best achievable fidelity** (min over
     schedules), kept deliberately separate from the placed schedule so
-    candidate-vs-candidate ranking is identical to the pre-Rung-16 ranker for *all*
-    palette sizes: exhaustive for size <= 4, multi-start coordinate descent
+    candidate ranking uses the same fidelity objective for every palette size: exhaustive for size <= 4, multi-start coordinate descent
     (:func:`_min_fidelity_descent`) for 5-8. Consequence (intentional): one
     ``PaletteCandidate`` carries ``.score`` = best-achievable fidelity (ranking /
     palette quality) while ``.swap_schedule`` + ``.diagnostics`` describe the
@@ -1195,9 +1194,7 @@ def _min_fidelity_descent(
 ) -> float:
     """Best achievable ΔE fidelity via multi-start coordinate descent.
 
-    The pre-Rung-16 fidelity search, used only to compute the candidate-ranking
-    score for palette sizes too large to enumerate exhaustively (5-8) — so ranking
-    stays identical to the old ranker. Placement is handled separately; this returns
+    Compute the ranking score for palette sizes too large to enumerate (5-8). Placement is handled separately; this returns
     only the minimum objective found. Deterministic (fixed starts, strict-improve).
     """
     transitions = palette_size - 1

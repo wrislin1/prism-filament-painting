@@ -75,7 +75,7 @@ class EnhanceParams:
 
 
 def recommend_enhancement(report: PrintabilityReport) -> EnhanceParams:
-    """Deterministic auto starting point derived from the Slice 1 report.
+    """Deterministic auto starting point derived from the luminance and band counts.
 
     Auto-levels from the report's 32-bin luminance histogram (1st/99th-percentile
     bin edges), a gentle gamma nudge from the histogram centroid, and a default

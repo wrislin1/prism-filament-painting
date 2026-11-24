@@ -20,12 +20,14 @@ def spool_list() -> str:
 
 def sample_image() -> Image.Image:
     width, height = 31, 19
-    pixels = bytearray()
-    for y in range(height):
-        for x in range(width):
-            pixels.extend((255 * x // (width - 1), 255 * y // (height - 1),
-                           (7 * x + 11 * y) % 256))
-    return Image.frombytes("RGB", (width, height), bytes(pixels))
+    # A paper-cut skyline in the three invented spool colours.
+    image = Image.new("RGB", (width, height), "#E3DBBC")
+    for x in range(width):
+        ridge = 4 + abs(x - 13) // 3
+        shore = 12 + abs(x - 22) // 5
+        for y in range(ridge, height):
+            image.putpixel((x, y), (215, 129, 82) if y < shore else (57, 71, 98))
+    return image
 
 
 if __name__ == "__main__":

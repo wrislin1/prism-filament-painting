@@ -1,4 +1,4 @@
-"""Shared preview metric tests for Prism and Quilt."""
+"""Shared preview metric tests for ranking and rendering."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""End-to-end Quilt engine orchestration."""
+"""End-to-end render engine orchestration."""
 
 from __future__ import annotations
 

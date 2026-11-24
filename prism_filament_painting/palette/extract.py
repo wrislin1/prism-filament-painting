@@ -12,7 +12,7 @@ def extract_dominant(image: Image.Image, k: int) -> list[tuple[tuple[int, int, i
 
     if "A" in image.getbands():
         # Drop fully-transparent pixels before quantization so background alpha=0
-        # pixels (e.g. from a Patchwork foreground mask) don't skew the palette.
+        # pixels (e.g. from a foreground mask) don't skew the palette.
         # Mirrors the alpha==0-as-background convention in rank._bin_target_by_luminance
         # and scoring.build_layer_target_model.
         rgba = image if image.mode == "RGBA" else image.convert("RGBA")

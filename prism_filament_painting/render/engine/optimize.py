@@ -1,4 +1,4 @@
-"""Differentiable color optimizer for Quilt height fields."""
+"""Differentiable color optimizer for renderer height fields."""
 
 from __future__ import annotations
 

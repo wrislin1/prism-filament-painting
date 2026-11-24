@@ -1,4 +1,4 @@
-"""Expected Quilt error classes."""
+"""Expected renderer error classes."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Preview rendering for Quilt height fields."""
+"""Render a preview from a height field."""
 
 from __future__ import annotations
 

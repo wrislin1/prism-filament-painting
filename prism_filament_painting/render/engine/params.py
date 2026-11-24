@@ -1,4 +1,4 @@
-"""Data containers for the Quilt engine."""
+"""Data containers for the render engine."""
 
 from __future__ import annotations
 

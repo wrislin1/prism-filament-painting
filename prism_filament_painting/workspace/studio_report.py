@@ -31,7 +31,7 @@ def _indexed_png(indices: np.ndarray, palette: list[int]) -> str:
 
 
 def _print_layers(image: Image.Image, stack: ForwardStack, mesh: dict, factor: int) -> np.ndarray:
-    # Studio supplies the factor from its triangle-cap recovery. Use Quilt's BOX
+    # Studio supplies the factor from its triangle-cap recovery. Use the renderer's BOX
     # grid, then expand its discrete printed cells to compare every source pixel.
     size = tuple((side + factor - 1) // factor for side in image.size)
     grid = image.resize(size, Image.Resampling.BOX) if size != image.size else image

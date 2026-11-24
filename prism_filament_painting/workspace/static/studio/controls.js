@@ -146,8 +146,8 @@ export function renderFilamentStack(container, state, onChange, onNotice) {
 
     const actions = document.createElement("div");
     actions.className = "row-actions";
-    const up = iconButton("Up", "^");
-    const down = iconButton("Down", "v");
+    const up = moveButton("Move up", strong.textContent);
+    const down = moveButton("Move down", strong.textContent);
     up.disabled = index === 0;
     down.disabled = index === state.palette.filaments.length - 1;
     up.addEventListener("click", () => reorder(state, index, index - 1, onChange, onNotice));
@@ -197,13 +197,14 @@ function reorder(state, from, to, onChange, onNotice) {
   onChange("palette");
 }
 
-function iconButton(label, glyph) {
+function moveButton(direction, spool) {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "icon-button secondary";
+  const label = `${direction}: ${spool}`;
   button.title = label;
   button.setAttribute("aria-label", label);
-  button.textContent = glyph;
+  button.textContent = direction;
   return button;
 }
 

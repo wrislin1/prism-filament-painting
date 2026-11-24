@@ -1,7 +1,7 @@
 {
   "sdist": {
-    "PKG-INFO": "1fd87f05b73c4ba1e211d217e93fe72a6293a89deb5786b193bb1db5a406a0fb",
-    "prism_filament_painting.egg-info/PKG-INFO": "1fd87f05b73c4ba1e211d217e93fe72a6293a89deb5786b193bb1db5a406a0fb",
+    "PKG-INFO": "e4e517a6263b7121fa32ba91cfae6b773f41b27d4663049ca644c32dd1d7c549",
+    "prism_filament_painting.egg-info/PKG-INFO": "e4e517a6263b7121fa32ba91cfae6b773f41b27d4663049ca644c32dd1d7c549",
     "prism_filament_painting.egg-info/SOURCES.txt": "39816d4819b391cf0e8f4808c97f8b9a40c2c6ea7592f8ac5a2c43eeadddd1db",
     "prism_filament_painting.egg-info/dependency_links.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
     "prism_filament_painting.egg-info/entry_points.txt": "64d8c3011f8390fa2a18c79d218748430df5ef7d0ea36f179c8e5a34fb2cc833",
@@ -10,10 +10,10 @@
     "setup.cfg": "1c473cbaee8da5fc46e7f0158794af5cea4414c34a3cf3f180c2001f5e38bd3e"
   },
   "wheel": {
-    "prism_filament_painting-0.1.1.dist-info/METADATA": "1fd87f05b73c4ba1e211d217e93fe72a6293a89deb5786b193bb1db5a406a0fb",
-    "prism_filament_painting-0.1.1.dist-info/RECORD": null,
-    "prism_filament_painting-0.1.1.dist-info/WHEEL": "98e75747d0b7c0c568bfb71263c3d8f970b3a374a6996087bc642be5cb09a1aa",
-    "prism_filament_painting-0.1.1.dist-info/entry_points.txt": "64d8c3011f8390fa2a18c79d218748430df5ef7d0ea36f179c8e5a34fb2cc833",
-    "prism_filament_painting-0.1.1.dist-info/top_level.txt": "41295396d74f1722fcc652dd82ffa1265b73edef0288beb4cd84830b65de232b"
+    "prism_filament_painting-0.1.2.dist-info/METADATA": "e4e517a6263b7121fa32ba91cfae6b773f41b27d4663049ca644c32dd1d7c549",
+    "prism_filament_painting-0.1.2.dist-info/RECORD": null,
+    "prism_filament_painting-0.1.2.dist-info/WHEEL": "98e75747d0b7c0c568bfb71263c3d8f970b3a374a6996087bc642be5cb09a1aa",
+    "prism_filament_painting-0.1.2.dist-info/entry_points.txt": "64d8c3011f8390fa2a18c79d218748430df5ef7d0ea36f179c8e5a34fb2cc833",
+    "prism_filament_painting-0.1.2.dist-info/top_level.txt": "41295396d74f1722fcc652dd82ffa1265b73edef0288beb4cd84830b65de232b"
   }
 }

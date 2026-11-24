@@ -92,6 +92,12 @@ def test_first_screen_and_sample(tmp_path):
         assert stale.status_code == 404 and "This print could not be opened" in stale.text
         picture = client.get("/sample/picture.png").raise_for_status()
         assert Image.open(BytesIO(picture.content)).tobytes() == sample_image().tobytes()
+        assert 'name="slots" min="1" max="3" value="3"' in home
+        ranked = client.post("/api/rank", files={"image": ("sample.png", picture.content, "image/png")},
+                             data={"slots": 3}).raise_for_status().json()["candidates"][0]
+        report = client.post("/studio/report", json=ranked["state"]).raise_for_status().json()
+        assert report["visible_pixels"] == 31 * 19
+        assert report["unreachable_pixels"] < report["visible_pixels"] // 2
 
 
 def test_first_use(tmp_path):
