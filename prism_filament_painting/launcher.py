@@ -52,7 +52,8 @@ def main():
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--data-dir", type=Path, default=default_directory())
     args = parser.parse_args()
-    os.environ["PRISM_CALIBRATION_DIR"] = str(args.data_dir.resolve() / "calibration")
-    config = uvicorn.Config(create_app(args.data_dir), host="127.0.0.1", port=args.port,
+    directory = args.data_dir.expanduser().resolve()
+    os.environ["PRISM_CALIBRATION_DIR"] = str(directory / "calibration")
+    config = uvicorn.Config(create_app(directory), host="127.0.0.1", port=args.port,
                             log_level="warning", access_log=False)
     WorkspaceServer(config).run()

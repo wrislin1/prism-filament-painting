@@ -57,6 +57,22 @@ def running(directory):
         server.wait(timeout=10)
 
 
+def test_data_directory_expands_home(monkeypatch, tmp_path):
+    import os
+    import sys
+    from prism_filament_painting import launcher
+
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("PRISM_CALIBRATION_DIR", "")
+    monkeypatch.setattr(sys, "argv", ["prism-filament-painting", "--data-dir", "~/workspace"])
+    monkeypatch.setattr(launcher.WorkspaceServer, "run", lambda server: None)
+    launcher.main()
+    workspace = tmp_path / "home" / "workspace"
+    assert (workspace / "library.sqlite").is_file()
+    assert Path(os.environ["PRISM_CALIBRATION_DIR"]) == workspace / "calibration"
+
+
 def test_first_screen_and_sample(tmp_path):
     with running(tmp_path) as client:
         assert (tmp_path / "server.log").read_text().splitlines() == [f"Open Prism at {str(client.base_url).rstrip('/')}"]
