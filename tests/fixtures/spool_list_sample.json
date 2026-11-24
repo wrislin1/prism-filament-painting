@@ -1,0 +1,46 @@
+{
+  "format": "spool_list",
+  "version": 1,
+  "Filaments": [
+    {
+      "Brand": "Illustration Works",
+      "Name": "Drift Ink",
+      "Color": "#4D4256",
+      "Transmissivity": 1.75,
+      "Type": "PLA",
+      "Owned": true
+    },
+    {
+      "Brand": "Illustration Works",
+      "Name": "Glass Fern",
+      "Color": "#6A9674",
+      "Transmissivity": 2.35,
+      "Type": "PLA",
+      "Owned": true
+    },
+    {
+      "Brand": "Illustration Works",
+      "Name": "Stone Bell",
+      "Color": "#BAA793",
+      "Transmissivity": 3.75,
+      "Type": "PLA",
+      "Owned": true
+    },
+    {
+      "Brand": "Illustration Works",
+      "Name": "Dawn Tile",
+      "Color": "#D08169",
+      "Transmissivity": 1.85,
+      "Type": "PLA",
+      "Owned": false
+    },
+    {
+      "Brand": "Illustration Works",
+      "Name": "Invalid colour",
+      "Color": "invalid",
+      "Transmissivity": 1.05,
+      "Type": "PLA",
+      "Owned": true
+    }
+  ]
+}

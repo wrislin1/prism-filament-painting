@@ -1,0 +1,20 @@
+{% macro chooser(groups, automatic, selected="auto", label="Material") %}
+<label class="field">{{ label }}
+  <select name="material_group" id="print-material" data-auto="{{ automatic }}" data-mixed="{{ mixed_warning }}" aria-describedby="material-note">
+    <option value="auto">Choose automatically</option>
+    {% for group in groups if group != "Unrecognised" %}<option value="{{ group }}"{% if group == selected %} selected{% endif %}>{{ group }}</option>{% endfor %}
+    <option value="mixed"{% if selected == "mixed" %} selected{% endif %}>Mix materials</option>
+  </select>
+</label>
+<p id="material-note" role="status" class="text-sm text-muted">{{ mixed_warning if selected == "mixed" else automatic }}</p>
+{% endmacro %}
+
+{% macro automatic() %}<input type="hidden" name="material_group" value="auto">{% endmacro %}
+
+{# The inert template lets an unknown inventory expose the chooser without a page reload. #}
+{% macro inventory_chooser(report, groups, reason) %}
+<input id="automatic-material" type="hidden" name="material_group" value="auto"{% if report %} disabled{% endif %}>
+<template id="material-controls">{{ chooser(groups, reason) }}</template>
+<div id="material-fields" class="contents">{% if report %}{{ chooser(groups, reason) }}{% endif %}</div>
+<span id="material-availability" role="status" class="sr-only"></span>
+{% endmacro %}

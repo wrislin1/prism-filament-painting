@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% from "_material.html" import chooser, automatic %}
+{% block title %}Flat print · Print editor · Prism{% endblock %}
+{% block content %}
+<script id="studio-boot" type="application/json">{{ boot_json | safe }}</script>
+<section class="flat-workspace flex flex-col gap-5">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <div><h1 class="text-xl font-semibold">Flat print</h1><p class="intro">Turn a picture into a flat print by matching each cell to layers of colour from four printer slots.</p></div>
+  </header>
+  {% if missing %}<p role="alert">This project could not be opened. <a href="/">Choose a saved project</a> or start a new print below.</p>{% endif %}
+  {% if not inventory_count and not has_state %}
+  <section class="panel"><h2>Add spools for your printer</h2><p>The slot choices come from your library. Add the spools loaded in your printer to start.</p>
+    <a href="/filaments#spool" class="btn btn-primary">Add your spools</a></section>
+  {% endif %}
+  <div class="grid gap-5 lg:grid-cols-[1fr_clamp(320px,30vw,400px)]">
+      <form {% if not inventory_count and not has_state %}hidden{% endif %} id="flat-form" class="panel p-5">
+        <h2>Set up the print</h2>
+        <fieldset id="flat-inputs" class="flex flex-col gap-3">
+          <label class="field">Picture to print<input id="flat-image" type="file" accept="image/*"></label>
+          <label class="field">Printer<select id="flat-profile"><option value="u1">Snapmaker U1</option><option value="a1">Bambu A1 with AMS Lite</option></select></label>
+          {{ chooser(choice.groups, choice.reason) if choice.report else automatic() }}
+          <p id="slot-help" class="text-sm text-muted">Match each slot to the spool loaded there. Slot 1 prints the backing beneath the picture. <a href="/filaments#spool">Add a missing spool</a>.</p>
+          {% for n in range(1,5) %}
+          <label class="field">Printer slot {{ n }}{% if n == 1 %} · backing{% endif %}<select class="flat-slot" required></select></label>
+          {% endfor %}
+
+          <button type="submit" class="btn btn-primary">Generate preview</button>
+          <details><summary>Print size and slicer settings</summary>
+          <label class="field">Cells on longest side<input id="flat-edge" type="number" value="100" min="1" max="100" required></label>
+          <label class="field">Cell width (mm)<input id="flat-pitch" type="number" value="1" min="1" max="2" step="0.01" required></label>
+          <label id="a1-settings" hidden>A1 project settings with recalculated flush volumes (optional JSON)<input id="flat-settings" type="file" accept=".json,.config"></label>
+          <label class="field">Resolved printer settings (optional JSON or 3MF)<input id="flat-project-settings" type="file" accept=".json,.config,.3mf"></label>
+          <label class="field">Slice report (optional JSON)<input id="flat-slice" type="file" accept=".json"></label>
+          </details>
+        </fieldset>
+      </form>
+    <section class="panel flat-preview"{% if not inventory_count and not has_state %} hidden{% endif %}>
+      <h2 id="flat-preview-title" tabindex="-1">Predicted print</h2>
+      <p id="flat-status" role="status" class="mt-2 text-sm">Choose a picture and generate a preview to see the predicted colours here.</p>
+      <div id="flat-result" hidden>
+        <canvas id="flat-canvas" class="mt-3 w-full" style="image-rendering:pixelated" aria-label="Predicted print"></canvas>
+        <h2 class="mt-4 font-semibold">Cost estimate</h2>
+        <p id="flat-selected"></p><p id="flat-budget"></p><p id="flat-basis" class="text-sm text-muted"></p>
+        <p id="flat-alternative"></p><button id="accept-plan" class="btn btn-quiet" hidden>Accept cheaper plan</button>
+        <p id="flat-detail-warning" role="status"></p>
+        <fieldset class="mt-4">
+          <legend class="font-semibold">Dithering</legend>
+          <label>Compare on <select id="dither-scope"></select></label>
+          <button type="button" id="compare-dither" class="btn btn-quiet">Compare dithering</button>
+          <button type="button" id="direct-match" class="btn btn-quiet" hidden>Turn dithering off</button>
+          <p id="dither-summary"></p>
+        </fieldset>
+        {% include "_studio_accuracy.html" %}
+        <h2 class="mt-4 font-semibold">Download print files</h2>
+        <p>Open the 3MF geometry in your slicer and use the slot map to assign its parts to the correct spools.</p>
+        <div id="flat-downloads" class="flex flex-wrap gap-2"></div><p id="settings-note" class="text-sm text-muted"></p>
+      </div>
+      <section id="dither-trial" hidden>
+        <h2 id="trial-title" tabindex="-1" class="font-semibold">Dithering preview</h2>
+        <canvas id="trial-canvas" class="w-full" style="image-rendering:pixelated"></canvas>
+        <p id="trial-trade"></p><p id="trial-warning"></p><p id="trial-cost"></p>
+        <button id="accept-dither" class="btn btn-primary">Accept dithering</button>
+        <button id="discard-dither" class="btn btn-quiet">Keep current plan</button>
+      </section>
+    </section>
+    <aside class="flex flex-col gap-4">
+
+      <fieldset id="region-editor" class="panel flex flex-col gap-3 p-5" hidden>
+        <legend>Region palettes</legend>
+        <label>Edit region <select id="edit-region"></select></label>
+        <div><button id="add-region" type="button" class="btn btn-quiet">Add region</button>
+          <button id="remove-region" type="button" class="btn btn-quiet">Remove</button>
+          <button id="undo-region" type="button" class="btn btn-ghost" hidden>Undo region removal</button>
+          <button id="raise-region" type="button" class="btn btn-quiet">Raise priority</button></div>
+        <label id="region-name-field">Name <input id="region-name" maxlength="64"></label>
+        <fieldset><legend>Eligible loaded slots</legend>
+          {% for n in range(1,5) %}<label><input class="region-slot" type="checkbox" value="{{ n }}"> {{ n }}</label>{% endfor %}
+        </fieldset>
+        <div id="paint-controls">
+          <label>Brush <select id="region-brush"><option value="1">Paint</option><option value="0">Erase</option></select></label>
+          <fieldset class="grid gap-2">
+            <legend>Edit a cell by position</legend>
+            <p id="cell-grid-size" class="text-sm text-muted"></p>
+            <label class="field">Column from left<input type="number" id="region-column" min="1" value="1" step="1" required></label>
+            <label class="field">Row from top<input type="number" id="region-row" min="1" value="1" step="1" required></label>
+            <button type="button" id="apply-cell" class="btn btn-quiet">Apply brush to cell</button>
+          </fieldset>
+        </div>
+        <canvas id="region-canvas" class="w-full" style="image-rendering:pixelated;touch-action:none" aria-label="Paint cells in the selected region"></canvas>
+        <p class="text-sm">Blue marks the selected region. Orange marks overlaps. The last region in the list wins. Unpainted cells use Background.</p>
+        <p id="region-info" class="text-sm" role="status"></p>
+      </fieldset>
+      <section class="panel flex flex-col gap-3 p-5">
+        <h2 class="eyebrow">Projects</h2>
+        <button id="studio-save" type="button" class="btn btn-quiet" disabled>Save flat project</button>
+        <div id="project-list" class="flex flex-col gap-2"></div>
+      </section>
+    </aside>
+  </div>
+</section>
+<script type="module" src="/static/studio/flat.js"></script>
+{% endblock %}

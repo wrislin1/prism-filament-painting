@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Spool library · Prism{% endblock %}
+{% block content %}
+<h1>Spool library</h1>
+<p class="intro">Record the filament you have so Prism can match its colours to a picture.</p>
+<form id="spool" class="panel">
+  <h2>Add a spool</h2>
+  <div class="fields">
+    <label>Brand <input name="brand" required maxlength="100" placeholder="e.g. Paper Orbit"></label>
+    <label>Colour name <input name="name" required maxlength="150" placeholder="e.g. Canal Slate"></label>
+    <label>Material <input name="material" value="PLA" required maxlength="100"></label>
+    <label>Spool colour <input name="hex" type="color" value="#396b86"></label>
+  </div>
+  <label>Transmission distance (mm) <input name="td" type="number" min="0.001" step="any" required aria-describedby="td-help"></label>
+  <p id="td-help" class="muted">Look for “TD” in the maker’s filament details, or enter your meter reading. Higher values let more of the colour below show through.</p>
+  <button class="btn-primary">Add spool</button>
+  <a class="next-step" href="/">Find a palette</a>
+</form>
+<p id="library-status" role="status"></p>
+<section class="panel"><h2>Your spools</h2><ul class="spool-list" id="spools"></ul></section>
+<details class="panel"><summary>Import a spool list or meter readings</summary>
+  <form id="import-spools"><label>Spool list (CSV, TSV or JSON) <input type="file" name="file" accept=".csv,.tsv,.json" required></label>
+    <p>Include brand, name, hex colour, TD and material for each spool.</p><button>Import spool list</button></form>
+  <form id="import-readings"><label>Meter readings (CSV) <input type="file" name="file" accept=".csv" required></label>
+    <p>Use the spool number shown above and a date like 2026-01-31. The CSV header is <code>spool,distance_mm,hex,date</code>. You can also include lot and sample.</p><button>Import readings</button></form>
+  <h3>Licences for imported catalogue data</h3>
+  <ul>
+    {% for key, name in catalogues.items() %}
+    <li><a href="/filaments/licenses/{{ key }}">{{ name }} (MIT)</a></li>
+    {% endfor %}
+  </ul>
+  <a href="/filaments/export" download>Download spool data and notices</a>
+</details>
+{% endblock %}

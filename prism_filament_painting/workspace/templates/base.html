@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>{% block title %}Prism · Filament painting{% endblock %}</title>
+  <link rel="stylesheet" href="/static/prism.css">
+  <script src="/static/workspace.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to workspace</a>
+  <header class="mast"><a class="brand" href="/">Prism</a>
+    <nav aria-label="Workspace">
+      {% for path, label in [('/', 'Find a palette'), ('/filaments', 'Spool library'), ('/studio', 'Print editor'),
+                             ('/studio/flat', 'Flat print'), ('/suggestions', 'Spool suggestions'), ('/opacity-wedges', 'Test opacity')] %}
+      <a href="{{ path }}"{% if request.url.path == path %} aria-current="page"{% endif %}>{{ label }}</a>
+      {% endfor %}
+    </nav>
+  </header>
+  <main id="workspace" tabindex="-1">{% block content %}{% endblock %}</main>
+  {% block body_scripts %}{% endblock %}
+</body></html>

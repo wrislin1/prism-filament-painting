@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Find a palette · Prism{% endblock %}
+{% block content %}
+<h1>Find a palette for your picture</h1>
+<p class="intro">Prism shows how a picture could look printed in layers of coloured filament. Compare your spools, then open a preview to adjust the layers and make print files.</p>
+{% if slots %}
+<form id="rank" class="panel" enctype="multipart/form-data">
+  <h2>Match a picture</h2>
+  <label>Picture to print <input type="file" name="image" accept="image/png,image/jpeg,image/webp"{% if request.query_params.get('picture') != 'sample' %} required{% endif %} aria-describedby="picture-help"></label>
+  <p id="picture-help" class="muted">Choose a still PNG, JPEG or WebP up to 4 megapixels and 16 MiB.</p>
+  <label><input type="checkbox" id="use-sample"{% if request.query_params.get('picture') == 'sample' %} checked{% endif %}> Use the sample picture</label>
+  <p class="muted">Try a small colour gradient. <a href="/sample/picture.png" download="prism-sample.png">Download sample picture</a></p>
+  <label>Number of spools to use <input type="number" name="slots" min="1" max="{{ slots }}" value="{{ [slots, 2]|min }}" required></label>
+  <p class="muted">Choose up to {{ slots }} from the {{ group }} group in your <a href="/filaments">spool library</a>.</p>
+  <button class="btn-primary" type="submit">Find matching palettes</button>
+  <details><summary>Adjust picture contrast</summary>
+    <label>Boost nearby light and dark details <input type="range" name="local_contrast" min="0" max="1" step="0.05" value="0"></label>
+    <p>Leave the slider at zero to use your original picture. Move it right to bring out details in low-contrast areas before matching colours.</p>
+  </details>
+</form>
+<p id="rank-status" role="status"></p>
+<section id="matches" class="panel" hidden><h2 id="matches-title" tabindex="-1">Matching palettes</h2>
+  <p>The first palette has the lowest predicted colour error among those compared. Spools are listed from the bottom layer to the top. Open a palette to see the print.</p>
+  <ol id="ranked"></ol>
+</section>
+{% else %}
+<section class="panel">
+  <h2>{{ 'Start your spool library' if empty else 'Add an available spool' }}</h2>
+  <p>{{ 'Your library is empty.' if empty else 'Your library has no available spools for matching.' }} Prism needs a spool’s colour and transmission distance to predict a print.</p>
+  <div class="row-actions"><a class="btn btn-primary" href="/filaments#spool">Add your spools</a>
+  {% if empty %}<form method="post" action="/sample"><button type="submit">Load invented sample</button></form>{% endif %}</div>
+  {% if empty %}<p class="muted">The sample adds three invented PLA spools to this library and selects a practice picture.</p>{% endif %}
+</section>
+{% endif %}
+<section class="panel"><h2>Saved projects</h2><ul id="saved"></ul></section>
+{% endblock %}

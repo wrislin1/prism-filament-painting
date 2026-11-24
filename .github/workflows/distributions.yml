@@ -1,0 +1,54 @@
+name: Distribution checks
+on:
+  pull_request:
+  push:
+    branches: ['**']
+    tags: ['**']
+  workflow_dispatch:
+  release:
+    types: [prereleased, published]
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: Installed ${{ matrix.artifact }} on Python 3.12
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        artifact: [wheel, sdist]
+    env:
+      IMAGE: python:3.12.15@sha256:0d0db5b17f11b1b7d1aafa74ceadaa64ba0944b267ff6fc22008a197acd6b9ad
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch checked dependencies
+        run: |
+          mkdir "$RUNNER_TEMP/downloads" "$RUNNER_TEMP/result"
+          docker run --rm --platform linux/amd64 --cpus 2 --memory 4g --user "$(id -u):$(id -g)" \
+            -v "$GITHUB_WORKSPACE/ci:/ci:ro" -v "$RUNNER_TEMP/downloads:/downloads" \
+            "$IMAGE" sh /ci/fetch.sh /downloads
+      - name: Audit, build and test offline
+        run: |
+          docker run --rm --pull never --platform linux/amd64 --network none --cpus 2 --memory 4g \
+            --user "$(id -u):$(id -g)" -v "$GITHUB_WORKSPACE:/src:ro" \
+            -v "$RUNNER_TEMP/downloads:/downloads:ro" -v "$RUNNER_TEMP/result:/result" \
+            "$IMAGE" sh /src/ci/offline.sh /src /downloads /result/verified "${{ matrix.artifact }}"
+      - name: Keep verified distributions and public reports
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: verified-${{ matrix.artifact }}
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/result/verified/*.whl
+            ${{ runner.temp }}/result/verified/*.tar.gz
+            ${{ runner.temp }}/result/verified/*.spdx.json
+            ${{ runner.temp }}/result/verified/tree.txt
+            ${{ runner.temp }}/result/verified/tests.xml
+            ${{ runner.temp }}/result/verified/installation.json
+            ${{ runner.temp }}/result/verified/CHANGELOG.md

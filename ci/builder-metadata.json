@@ -1,0 +1,19 @@
+{
+  "sdist": {
+    "PKG-INFO": "4f8a10eabe83d1fe15e68c2e7d2c5ef362e09bd5420b4c9bb414a031700c79bd",
+    "prism_filament_painting.egg-info/PKG-INFO": "4f8a10eabe83d1fe15e68c2e7d2c5ef362e09bd5420b4c9bb414a031700c79bd",
+    "prism_filament_painting.egg-info/SOURCES.txt": "39816d4819b391cf0e8f4808c97f8b9a40c2c6ea7592f8ac5a2c43eeadddd1db",
+    "prism_filament_painting.egg-info/dependency_links.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "prism_filament_painting.egg-info/entry_points.txt": "64d8c3011f8390fa2a18c79d218748430df5ef7d0ea36f179c8e5a34fb2cc833",
+    "prism_filament_painting.egg-info/requires.txt": "e0d15960647974d6d25f555993e5644887a3cca4b601b551322689fab02118d5",
+    "prism_filament_painting.egg-info/top_level.txt": "41295396d74f1722fcc652dd82ffa1265b73edef0288beb4cd84830b65de232b",
+    "setup.cfg": "1c473cbaee8da5fc46e7f0158794af5cea4414c34a3cf3f180c2001f5e38bd3e"
+  },
+  "wheel": {
+    "prism_filament_painting-0.1.0.dist-info/METADATA": "4f8a10eabe83d1fe15e68c2e7d2c5ef362e09bd5420b4c9bb414a031700c79bd",
+    "prism_filament_painting-0.1.0.dist-info/RECORD": null,
+    "prism_filament_painting-0.1.0.dist-info/WHEEL": "98e75747d0b7c0c568bfb71263c3d8f970b3a374a6996087bc642be5cb09a1aa",
+    "prism_filament_painting-0.1.0.dist-info/entry_points.txt": "64d8c3011f8390fa2a18c79d218748430df5ef7d0ea36f179c8e5a34fb2cc833",
+    "prism_filament_painting-0.1.0.dist-info/top_level.txt": "41295396d74f1722fcc652dd82ffa1265b73edef0288beb4cd84830b65de232b"
+  }
+}

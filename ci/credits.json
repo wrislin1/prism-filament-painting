@@ -1,0 +1,71 @@
+{
+  "origins": {
+    "original": {
+      "kind": "original",
+      "license": "MIT"
+    },
+    "layertone-events": {
+      "kind": "adaptation",
+      "repository": "Akoozie/layertone",
+      "revision": "836090ede4c0679cd05e56b49793f6562e9200a0",
+      "file": "src/layertone/threemf.py",
+      "scope": "Layer-event encoding and operation numbers. Other code in this file is original.",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2026 Akoozie",
+      "destination": "licenses/layertone-MIT.txt",
+      "license_sha256": "0cd3567436632ffd558239338957073c177f09aeb6ba0aba2fa430d634a1ac31"
+    },
+    "Akoozie/layertone": {
+      "kind": "licence-text",
+      "destination": "licenses/layertone-MIT.txt",
+      "license": "MIT"
+    },
+    "OpenPrintTag/openprinttag-database": {
+      "kind": "licence-text",
+      "destination": "licenses/catalogues/openprinttag-database-MIT.txt",
+      "license": "MIT"
+    },
+    "OpenFilamentCollective/open-filament-database": {
+      "kind": "licence-text",
+      "destination": "licenses/catalogues/open-filament-database-MIT.txt",
+      "license": "MIT"
+    }
+  },
+  "credits": {
+    "prism_filament_painting/core/opacity.py": {
+      "kind": "published equations",
+      "publication_url": "https://kromacut.com/docs/calibration-theory"
+    },
+    "prism_filament_painting/palette/catalogues.py": {
+      "kind": "user-imported data only",
+      "sources": [
+        {
+          "repository": "OpenPrintTag/openprinttag-database",
+          "revision": "07787de895eab8d223b480e567c1d058397e59f8",
+          "section": "OpenPrintTag material database",
+          "license": "MIT",
+          "copyright": "Copyright 2025 PRUSA RESEARCH A.S.",
+          "destination": "licenses/catalogues/openprinttag-database-MIT.txt",
+          "license_sha256": "dbdf197b8bdcdcb53fd36d72960a3dbb8dc4ab7c12e3ede01d6ad955b3ec3763",
+          "final_newline": true
+        },
+        {
+          "repository": "OpenFilamentCollective/open-filament-database",
+          "revision": "d1b75e8b7739a8991e0e3bfb600acc161c340776",
+          "section": "Open Filament Database",
+          "license": "MIT",
+          "copyright": "Copyright © 2025 OpenFilamentCollective",
+          "destination": "licenses/catalogues/open-filament-database-MIT.txt",
+          "license_sha256": "4de0fe1cb65d7378d1629bba1afcf107d0f3044d829e1727c11f45580b54c903",
+          "final_newline": false
+        }
+      ]
+    }
+  },
+  "files": {
+    "licenses/catalogues/open-filament-database-MIT.txt": "OpenFilamentCollective/open-filament-database",
+    "licenses/catalogues/openprinttag-database-MIT.txt": "OpenPrintTag/openprinttag-database",
+    "licenses/layertone-MIT.txt": "Akoozie/layertone",
+    "prism_filament_painting/render/engine/classic_project.py": "layertone-events"
+  }
+}

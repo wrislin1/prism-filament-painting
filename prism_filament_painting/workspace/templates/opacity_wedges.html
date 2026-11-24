@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Test filament opacity · Prism{% endblock %}
+{% block content %}
+<section id="wedge-page" class="flex flex-col">
+  <header>
+    <h1>Test filament opacity</h1>
+    <p class="intro">Print a stepped wedge to find how thick your filament must be to hide the backing colour.</p>
+  </header>
+  {% if filaments|length < 2 %}
+  <section class="panel"><h2>Choose two spools first</h2>
+    <p>You need a test colour and a contrasting backing. Add them to your library so Prism can prepare the print files.</p>
+    <a class="btn btn-primary" href="/filaments#spool">Add your spools</a></section>
+  {% endif %}
+  {% if history %}<a href="#saved-wedges">Open a saved test print to record readings</a>{% endif %}
+  <form id="generate-wedge"{% if filaments|length < 2 %} hidden{% endif %} method="post" action="/opacity-wedges" class="panel grid">
+    <h2 id="make-wedge" tabindex="-1">Make a test print</h2>
+    <p>Pick the colour to test and an opaque backing in a contrasting colour. Give each spool a label you can find again when you read the print.</p>
+    <div class="fields">
+    {% for role, title in [('top', 'Test spool'), ('backing', 'Opaque backing')] %}
+      <fieldset class="grid"><legend>{{ title }}</legend>
+        <label class="field">Library filament
+          <select name="{{ role }}" required><option value="">Choose filament</option>
+          {% for f in filaments %}<option value="{{ f.id }}">{{ f.brand }} {{ f.name }} · {{ f.material }} · {{ f.hex }} · #{{ f.id }}</option>{% endfor %}
+          </select>
+        </label>
+        <label class="field">Spool or lot label <input name="{{ role }}_lot" maxlength="100" required></label>
+        <details><summary>Add five meter scans (optional)</summary><label class="field">One transmission distance (mm) and hex colour per line
+          <textarea name="{{ role }}_scans" rows="5" placeholder="5.7 #FFFFFF"></textarea>
+        </label></details>
+      </fieldset>
+    {% endfor %}
+    </div>
+    <button class="btn btn-primary" type="submit">Create test print files</button>
+    <p role="alert"></p>
+  </form>
+  <section class="panel grid" aria-labelledby="saved-wedges">
+    <h2 id="saved-wedges" tabindex="-1">Saved test prints</h2>
+    <p id="history-count">{% if history %}{{ history|length }} recent test print{{ 's' if history|length != 1 else '' }}.{% else %}No test prints saved yet. Create the files for a test print to see it here.{% endif %}</p>
+    <label id="history-picker" class="field"{% if not history %} hidden{% endif %}>Choose a test print to open its readings
+      <select id="previous-wedge"><option value="">Choose a test print</option>
+      {% for w in history %}<option value="{{ w.id }}">{{ w.top.name }} ({{ w.top.spool_id }}) over {{ w.backing.name }} ({{ w.backing.spool_id }}) · {{ w.id[:8] }}</option>{% endfor %}
+      </select>
+    </label>
+  </section>
+  <p id="wedge-status" role="status"></p>
+  <section id="wedge-detail" class="panel" hidden>
+    <h2 id="pair-title" tabindex="-1"></h2>
+    <p id="divisor"></p>
+    <p id="print-estimate"></p>
+    <a id="wedge-download" class="btn btn-ghost">Download both STL parts and print instructions</a>
+    <p>Import together as one object. Use 100% solid fill and 0.08 mm layers throughout.</p>
+    <p id="swap-instructions"></p>
+    <form id="wedge-reading" data-confirm="Save passes {passes} as the final reading for this test print and update the test spool’s measurement?" class="grid">
+      <p>After printing, look at the patches under even light from the front. Start at patch 1 for each of three passes. Compare centres to the rail. Cover earlier answers and check that every thicker patch still matches.</p>
+      {% for i in [1,2,3] %}
+      <label class="field">Pass {{ i }} · first matching patch
+        <select name="pass{{ i }}" required><option value="">Choose reading</option>
+          {% for k in range(1,31) %}<option>{{ k }}</option>{% endfor %}
+          <option value="none">No match through patch 30</option></select>
+        <button class="btn btn-quiet" type="button" hidden>Answer covered · change</button>
+      </label>
+      {% endfor %}
+      <label class="field">Optional meter scans for the test spool (five lines of TD and hex colour)
+        <textarea name="late_scans" rows="2"></textarea></label>
+      <label class="field">Optional measured patch heights above bare backing, one patch number and mm per line
+        <textarea name="heights" rows="2" placeholder="10 0.80"></textarea></label>
+      <label class="field">Lighting, print settings and anomalies. For scans include scan date, device ID, firmware and calibration state.
+        <textarea name="conditions" required maxlength="2000"></textarea></label>
+      <label><input type="checkbox" name="controls"> Backing and rail passed thicker-control checks, finish is consistent, and thicker patches retained the match where one was found.</label>
+      <button class="btn btn-primary" disabled type="submit">Save readings</button>
+      <p role="alert"></p>
+    </form>
+    <div id="wedge-result" hidden><h3>Measured result</h3>
+      <p id="intervals"></p><details><summary>Reading record</summary><pre id="raw-result"></pre></details>
+    </div>
+  </section>
+
+</section>
+{% endblock %}
+{% block body_scripts %}<script src="/static/opacity-wedges.js" defer></script>{% endblock %}

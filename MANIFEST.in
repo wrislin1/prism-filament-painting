@@ -1,0 +1,5 @@
+recursive-include tests *.py *.json
+include CHANGELOG.md CONTRIBUTING.md SECURITY.md
+recursive-include ci *.md *.py *.lock *.sh *.json
+include .github/workflows/distributions.yml
+include .github/ISSUE_TEMPLATE/bug.md .github/ISSUE_TEMPLATE/feature.md
